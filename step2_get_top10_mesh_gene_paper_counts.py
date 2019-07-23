@@ -15,7 +15,7 @@ while True:
 	except OverflowError:
 		maxInt = int(maxInt/10)
 
-with open('/scratch/timrpeterson/mesh_gene_paper_count_limited_unfiltered_top10.csv', 'w') as csvfile:
+with open('/scratch/timrpeterson/MORPHEOME/mesh_gene_paper_count_limited_homologs_top10.csv', 'w') as csvfile:
 	spamwriter = csv.writer(csvfile, delimiter=',')
 		
 	with open('/scratch/njacobs/mesh_gene_intersect_limited_homologs.tsv') as csv_file:
