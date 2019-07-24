@@ -22,7 +22,7 @@ if ( ($handle = fopen($storage."/scratch/timrpeterson/MORPHEOME/MeSH_terms.csv",
 
 $storage = "/scratch/timrpeterson/MORPHEOME/";
 
-if ( ($handle1 = fopen($storage."mesh_gene_paper_count_limited_homologs_top10_with_aliases_php.csv", "w") ) !== FALSE) {
+if ( ($handle1 = fopen($storage."mesh_gene_paper_count_limited_homologs_top10_with_aliases_php-10-aliases.csv", "w") ) !== FALSE) {
 
     if ( ($handle = fopen($storage."mesh_gene_paper_count_limited_homologs_top10_php.csv", "r") ) !== FALSE) {
 
@@ -38,6 +38,14 @@ if ( ($handle1 = fopen($storage."mesh_gene_paper_count_limited_homologs_top10_wi
 
                 $line0 = $line;
             
+                $cnt = count($new_arr[$line[0]]);
+                if($cnt < 10){
+                    $cnt = 10-$cnt;
+                    $new_arr[$line[0]] = array_merge($new_arr[$line[0]], array_fill(0, $cnt, ""));
+                }
+                else $new_arr[$line[0]] = array_slice($new_arr[$line[0]], 0, 10);
+
+
                 fputcsv($handle1, array_merge($line0, $new_arr[$line[0]]));
 
             }
