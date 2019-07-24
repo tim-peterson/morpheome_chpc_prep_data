@@ -15,10 +15,10 @@ while True:
 	except OverflowError:
 		maxInt = int(maxInt/10)
 
-with open('/scratch/timrpeterson/MORPHEOME/mesh_gene_paper_count_limited_homologs_top10.csv', 'w') as csvfile:
+with open('/scratch/timrpeterson/MORPHEOME/mesh_gene_paper_count_limited_homolog_filtered_top10-desc.csv', 'w') as csvfile:
 	spamwriter = csv.writer(csvfile, delimiter=',')
-		
-	with open('/scratch/njacobs/mesh_gene_intersect_limited_homologs.tsv') as csv_file:
+	with open('/scratch/njacobs/mesh_gene_intersect_limited_homolog_filtered.tsv') as csv_file:	
+	#with open('/scratch/njacobs/mesh_gene_intersect_limited_homologs.tsv') as csv_file:
 		csv_reader = csv.reader(csv_file, delimiter='\t')
 		
 		#next(csv_file)
@@ -41,8 +41,9 @@ with open('/scratch/timrpeterson/MORPHEOME/mesh_gene_paper_count_limited_homolog
 				continue
 		
 			#row0.sort(reverse=True)
-			row0 = sorted(enumerate(row0), key=operator.itemgetter(1))
-			top10 = row0[-10:]
+			row0 = sorted(enumerate(row0), key=operator.itemgetter(1), reverse=True)
+			top10 = row0[:10]
+			#top10.sort(reverse=True)
 			#sorted(range(len(row1)), key=lambda k: row1[k])
 
 			#top10 = row0[:10]

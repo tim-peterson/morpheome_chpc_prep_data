@@ -28,10 +28,10 @@ with open('/scratch/timrpeterson/MORPHEOME/MeSH_terms.csv') as csv_file:
 
 csv_file.close()
 
-with open('/scratch/timrpeterson/MORPHEOME/mesh_gene_paper_count_limited_homologs_top10_with_aliases.csv', 'w') as csvfile:
+with open('/scratch/timrpeterson/MORPHEOME/mesh_gene_paper_count_limited_homologs_top10_with_aliases-desc.csv', 'w') as csvfile:
 	spamwriter = csv.writer(csvfile, delimiter=',')
 		
-	with open('/scratch/timrpeterson/MORPHEOME/mesh_gene_paper_count_limited_homologs_top10.csv') as csv_file:
+	with open('/scratch/timrpeterson/MORPHEOME/mesh_gene_paper_count_limited_homologs_top10-desc.csv') as csv_file:
 		csv_reader = csv.reader(csv_file, delimiter=',')
 
 		for row in csv_reader:
