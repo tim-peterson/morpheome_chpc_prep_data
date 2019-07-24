@@ -42,6 +42,13 @@ if ( ($handle0 = fopen($storage."gene_paper_counts.csv", "r") ) !== FALSE) {
 }
 fclose($handle0);  
 
+function assc_array_count_values( $array, $key ) {
+    foreach( $array as $row ) {
+         $new_array[] = $row[$key];
+    }
+    return array_count_values( $new_array );
+}
+
 if ( ($handle1 = fopen($storage."mesh_gene_paper_count_limited_homologs_top10_with_aliases_basal_orphans_php-less25.csv", "w") ) !== FALSE) {
 
     if ( ($handle = fopen($storage."mesh_gene_paper_count_limited_homologs_top10_with_aliases_php-10-aliases.csv", "r") ) !== FALSE) {
@@ -67,6 +74,7 @@ if ( ($handle1 = fopen($storage."mesh_gene_paper_count_limited_homologs_top10_wi
 
                     $cnt = 0;
                     while (($line0 = fgetcsv($handle0,  0, ",")) !== FALSE){
+
                         if($cnt == 0){
                             $cnt++;
                             continue;
@@ -112,7 +120,6 @@ if ( ($handle1 = fopen($storage."mesh_gene_paper_count_limited_homologs_top10_wi
             
                 //FGF8,219,THUMPD3-AS1,195,BMP4,193,PAX6,168,TP53,153,SOX9,148,PAX2,140,PTCH1,131,GLI3
 
-
                 // sort desc all Pearson's correlations for a given top-cited gene
                 usort($orphan_pairs, function ($item1, $item2) {
                     return $item2[1] <=> $item1[1];
@@ -121,29 +128,57 @@ if ( ($handle1 = fopen($storage."mesh_gene_paper_count_limited_homologs_top10_wi
                 // get top 100 genes for each top_cited gene
                 $orphan_pairs_top100[$row] = array_slice($orphan_pairs, 0, 100, true);
             }
-
-            //print_r($orphan_pairs_top100);
-            //exit;//
             
             $multi_hit_orphans = [];
+            $multi_hit_orphans0 = [];
             foreach($orphan_pairs_top100 as $row => $orphan_pairs){
 
                 foreach($orphan_pairs as $row0){
-                    $multi_hit_orphans[] = $row0[0];
+
+                    $multi_hit_orphans0[] = $row0[0];
+
+                    /*if(!isset($multi_hit_orphans[$line[$row]])){
+                        $multi_hit_orphans[$line[$row]] = [$row0[0]];
+                    }
+                    else $multi_hit_orphans[$line[$row]][] = $row0[0];*/
                 }
             }
 
-           // print_r($multi_hit_orphans);
-            $multi_hit_orphans = array_count_values($multi_hit_orphans);
+            $multi_hit_orphans0 = array_count_values($multi_hit_orphans0);
+            //print_r($multi_hit_orphans0);
+            //exit;
 
-            foreach($multi_hit_orphans as $key => $val){
-                if($val < 2){
-                    unset($multi_hit_orphans[$key]);
+            foreach($orphan_pairs_top100 as $key => $val){
+                //print_r($val);
+                //exit;
+                foreach($val as $k => $v){
+                    if(isset($multi_hit_orphans0[$v[0]]) && $multi_hit_orphans0[$v[0]] > 1){
+                    
+                        //echo "inside".$multi_hit_orphans0[$v[0]];
+    
+                        $multi_hit_orphans[$line[$key]] = $v[0];
+                    }
+                    //else echo 'foo';
                 }
+
             }
+            //exit;
+            /*foreach($multi_hit_orphans as $k => $v){
+                $v0 = array_count_values($v);
+                $multi_hit_orphans[$k] = $v0;
+            }*/
+
+            /*foreach($multi_hit_orphans as $key => $val){
+                foreach($val as $k => $v){
+                    if($v < 2){
+                        unset($multi_hit_orphans[$key][$val[$k]]);
+                    }
+                }
+
+            }*/
 
             //print_r($multi_hit_orphans);
-
+            //exit;
             $new_arr = [];
             foreach($orphan_pairs_top100 as $row => $orphan_pairs){
 
@@ -158,12 +193,13 @@ if ( ($handle1 = fopen($storage."mesh_gene_paper_count_limited_homologs_top10_wi
                             //break;
                         }
                         else{
-                            if(isset($multi_hit_orphans[$row0[0]])){
+                            if(isset($multi_hit_orphans[$line[$row]])){
                                 // if no citations
                                 //array_pop($new_arr);
                                 echo 'inside1 multi-hits';
-                                print_r($multi_hit_orphans[$row0[0]]);
-                                $row1 = array_replace($row0, [0 => $row0[0]."-multi-hit-".$multi_hit_orphans[$row0[0]]] );
+                                print_r($line[$row]."___".$row0[0]);
+                                echo "\r\n";
+                                $row1 = array_replace($row0, [0 => $row0[0]."-multi-hit-".$line[$row]] );
                                 $new_arr[$row] = $row1;
                             } 
     
@@ -171,7 +207,8 @@ if ( ($handle1 = fopen($storage."mesh_gene_paper_count_limited_homologs_top10_wi
                                 // if no citations
                                 //array_pop($new_arr);
                                 echo 'inside2 huttlin match';
-                                print_r($huttlin_pairs[$line[$row]]);
+                                print_r($line[$row]."___".$row0[0]);
+                                echo "\r\n";
                                 $row1 = array_replace($row0, [0 => $row0[0]."-huttlin-".$line[$row]] );
                                 $new_arr[$row] = $row1;
                             }                        
