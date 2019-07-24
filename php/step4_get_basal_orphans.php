@@ -25,8 +25,24 @@ if ( ($handle0 = fopen($storage."huttlin_genes_only.csv", "r") ) !== FALSE) {
 }
 fclose($handle0);   
 
+$gene_paper_greater_than_25 = [];
+if ( ($handle0 = fopen($storage."gene_paper_counts.csv", "r") ) !== FALSE) {
 
-if ( ($handle1 = fopen($storage."mesh_gene_paper_count_limited_homologs_top10_with_aliases_basal_orphans_php.csv", "w") ) !== FALSE) {
+    while (($line0 = fgetcsv($handle0,  0, ",")) !== FALSE){
+
+        if($line[1] < 25){
+
+            if(!isset($gene_paper_greater_than_25[$line[0]])){
+                $gene_paper_greater_than_25[$line[0]] = $line[1];
+            }
+        }
+
+     
+    }
+}
+fclose($handle0);  
+
+if ( ($handle1 = fopen($storage."mesh_gene_paper_count_limited_homologs_top10_with_aliases_basal_orphans_php-less25.csv", "w") ) !== FALSE) {
 
     if ( ($handle = fopen($storage."mesh_gene_paper_count_limited_homologs_top10_with_aliases_php-10-aliases.csv", "r") ) !== FALSE) {
 
@@ -55,8 +71,13 @@ if ( ($handle1 = fopen($storage."mesh_gene_paper_count_limited_homologs_top10_wi
                             $cnt++;
                             continue;
                         }
-                        // set key to gene_symbol
-                        $orphan_pairs[$line0[0]] = $line0;
+
+                        // if orphan has less than 25 citations
+                        if(!isset($gene_paper_greater_than_25[$line0[0]])){
+                            // set key to orphan gene_symbol
+                            $orphan_pairs[$line0[0]] = $line0;
+                        }
+                        
 
                     }
 
@@ -89,6 +110,9 @@ if ( ($handle1 = fopen($storage."mesh_gene_paper_count_limited_homologs_top10_wi
                     fclose($handle0);  
                 }*/
             
+                //FGF8,219,THUMPD3-AS1,195,BMP4,193,PAX6,168,TP53,153,SOX9,148,PAX2,140,PTCH1,131,GLI3
+
+
                 // sort desc all Pearson's correlations for a given top-cited gene
                 usort($orphan_pairs, function ($item1, $item2) {
                     return $item2[1] <=> $item1[1];
