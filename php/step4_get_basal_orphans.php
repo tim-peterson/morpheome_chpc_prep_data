@@ -156,8 +156,14 @@ if ( ($handle1 = fopen($storage."mesh_gene_paper_count_limited_homologs_top10_wi
                     
                         //echo "inside".$multi_hit_orphans0[$v[0]];
     
-                        $multi_hit_orphans[$line[$key]] = $v[0];
+                        //$multi_hit_orphans[$line[$key]] = $v[0];
+
+                        if(!isset($multi_hit_orphans[$line[$key]])){
+                            $multi_hit_orphans[$line[$key]] = [$v[0]];
+                        }
+                        else $multi_hit_orphans[$line[$key]][] = $v[0];
                     }
+                    
                     //else echo 'foo';
                 }
 
@@ -193,14 +199,15 @@ if ( ($handle1 = fopen($storage."mesh_gene_paper_count_limited_homologs_top10_wi
                             //break;
                         }
                         else{
-                            if(isset($multi_hit_orphans[$line[$row]])){
+                            if(isset($multi_hit_orphans[$line[$row]]) && in_array($row0[0], $multi_hit_orphans[$line[$row]])){
                                 // if no citations
                                 //array_pop($new_arr);
                                 echo 'inside1 multi-hits';
                                 print_r($line[$row]."___".$row0[0]);
                                 echo "\r\n";
-                                $row1 = array_replace($row0, [0 => $row0[0]."-multi-hit-".$line[$row]] );
-                                $new_arr[$row] = $row1;
+                                
+                                $new_arr[$row] = array_replace($new_arr[$row], [0 => $new_arr[$row][0]."-".$row0[0]."-multi-hit-".$line[$row]] );
+                                //$new_arr[$row] = $row1;
                             } 
     
                             if(isset($huttlin_pairs[$line[$row]]) && in_array($row0[0], $huttlin_pairs[$line[$row]]) ){
@@ -209,8 +216,10 @@ if ( ($handle1 = fopen($storage."mesh_gene_paper_count_limited_homologs_top10_wi
                                 echo 'inside2 huttlin match';
                                 print_r($line[$row]."___".$row0[0]);
                                 echo "\r\n";
-                                $row1 = array_replace($row0, [0 => $row0[0]."-huttlin-".$line[$row]] );
-                                $new_arr[$row] = $row1;
+                                $new_arr[$row] = array_replace($new_arr[$row], [0 => $new_arr[$row][0]."-".$row0[0]."-huttlin-".$line[$row]] );
+
+                                //$row1 = array_replace($row0, [0 => $row0[0]."-huttlin-".$line[$row]] );
+                                //$new_arr[$row] = $row1;
                             }                        
                         } 
 
