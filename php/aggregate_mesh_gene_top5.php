@@ -14,6 +14,7 @@ $files = array_diff(scandir($path), array('.', '..'));
 
 $genes_top_5 = [];
 
+$cnt = 0;
 
 foreach($files as $file){
 
@@ -21,7 +22,7 @@ foreach($files as $file){
 
     if ( ($handle = fopen($path.$file, "r") ) !== FALSE) {
 
-        while (($line = fgetcsv($handle,  0, "\t")) !== FALSE){
+        while (($line = fgetcsv($handle,  0, ",")) !== FALSE){
 
             $line0 = $line;
             $gene = array_shift($line0);
@@ -37,13 +38,18 @@ foreach($files as $file){
 
                 if ($i % 2 == 0){
                     $line1[$line0[$i]] = $line0[$i+1];
+
+
                 }
 
             }
 
+
             arsort($line1);
 
             $top10 = array_slice($line1, 0, 5, true);
+
+            //print_r($top10);
 
 
             if(empty($genes_top_5[$gene])){
@@ -53,14 +59,15 @@ foreach($files as $file){
             }
             else{
 
-                $genes_top_5[$gene] = array_merge($genes_top_5[$gene], $top10);
+                $tmp = $genes_top_5[$gene];
 
-                arsort($genes_top_5[$gene]);
+                $tmp = array_merge($tmp, $top10);
 
-                $genes_top_5[$gene] = array_slice($genes_top_5[$gene], 0, 5, true);
+                arsort($tmp);
 
-                print_r($genes_top_5[$gene]);
-                die();
+                $genes_top_5[$gene] = array_slice($tmp, 0, 5, true);
+
+
             }
 
            //$cnt++;
@@ -70,23 +77,28 @@ foreach($files as $file){
     }
     fclose($handle);
 
+   if($cnt > 1) break;
+    $cnt++;
 }
+
 
 
 if ( ($handle1 = fopen($storage."aggregate_mesh_gene_top5_php.csv", "w") ) !== FALSE) {
 
+        
         foreach($genes_top_5 as $gene => $mesh_arr){
 
             $tmp = [$gene];
 
             foreach($mesh_arr as $k => $v){
-
+              
                 $tmp[] = $k;
                 $tmp[] = $v;
+
             }
 
             fputcsv($handle1, $tmp);
-
+           
         }
 
 }
