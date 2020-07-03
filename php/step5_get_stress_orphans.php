@@ -49,9 +49,9 @@ function assc_array_count_values( $array, $key ) {
     return array_count_values( $new_array );
 }
 
-if ( ($handle1 = fopen($storage."mesh_gene_paper_count_limited_homologs_top10_with_aliases_basal_orphans_php-less25-v7.csv", "w") ) !== FALSE) {
+if ( ($handle1 = fopen($storage."mesh_gene_paper_count_limited_homologs_top10_with_aliases_basal_stress_orphans_php-less25-v8.csv", "w") ) !== FALSE) {
 
-    if ( ($handle = fopen($storage."mesh_gene_paper_count_limited_homologs_top10_with_aliases_php-10-aliases.csv", "r") ) !== FALSE) {
+    if ( ($handle = fopen($storage."mesh_gene_paper_count_limited_homologs_top10_with_aliases_basal_orphans_php-less25-v7.csv", "r") ) !== FALSE) {
 
         $row = 0;
         $col_names = [];
@@ -71,7 +71,7 @@ if ( ($handle1 = fopen($storage."mesh_gene_paper_count_limited_homologs_top10_wi
                
                 $orphan_pairs = [];
 
-                if ( ($handle0 = fopen($storage."interaction_correlations_basal-2019q2/".$line[$row]."-2019q2-pearsons-python.csv", "r") ) !== FALSE) {
+                if ( ($handle0 = fopen($storage."interaction_correlations_basal-crispria/".$line[$row]."-pearsons-crispria.csv", "r") ) !== FALSE) {
 
                     $cnt = 0;
                     while (($line0 = fgetcsv($handle0,  0, ",")) !== FALSE){
