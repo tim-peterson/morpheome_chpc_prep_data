@@ -11,14 +11,7 @@ $start = microtime(true);
 //$next = "";
 
 
-
-
-/*split_filter () { { head -n 1 /scratch/njacobs/mesh_gene_intersect.tsv; cat; } > "$FILE"; }; export -f split_filter; tail -n +2 file.txt | split --lines=1000 --filter=split_filter - split_
-
-cat mesh_gene_intersect.tsv | parallel --header : --pipe -N999 'cat >file_{#}.csv'
-
-
-tail -n +2 FILE.in | split -d --lines 100 - --filter='bash -c "{ head -n1 ${FILE%.*}; cat; } > $FILE"' FILE.in.x
+/* to split large csv file:
 
 tail -n +2 mesh_gene_intersect.tsv | split -l 1000 - split_
 for file in split_*
@@ -26,7 +19,37 @@ do
     head -n 1 mesh_gene_intersect.tsv > tmp_file
     cat $file >> tmp_file
     mv -f tmp_file $file
-done*/
+done
+
+/*rename all files in a directory with prefix "mesh_gene_" */
+
+/*for FILENAME in *; do mv $FILENAME mesh_gene_$FILENAME; done 
+
+
+tail -n +2 gene_gene_intersect.tsv | split -l 1000 - split_gene_gene_
+for file in split_gene_gene_*
+do
+    head -n 1 gene_gene_intersect.tsv > tmp_file
+    cat $file >> tmp_file
+    mv -f tmp_file $file
+done
+
+*/
+
+
+/*
+
+DIDNT'T USE
+
+split_filter () { { head -n 1 /scratch/njacobs/mesh_gene_intersect.tsv; cat; } > "$FILE"; }; export -f split_filter; tail -n +2 file.txt | split --lines=1000 --filter=split_filter - split_
+
+cat mesh_gene_intersect.tsv | parallel --header : --pipe -N999 'cat >file_{#}.csv'
+
+
+tail -n +2 FILE.in | split -d --lines 100 - --filter='bash -c "{ head -n1 ${FILE%.*}; cat; } > $FILE"' FILE.in.x
+*/
+
+
 
 $path = "/home/jiwpark00/timrpeterson/njacobs/process_data/";
 
