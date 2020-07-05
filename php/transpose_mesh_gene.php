@@ -11,7 +11,7 @@ $start = microtime(true);
 //$next = "";
 
 
-/* to split large csv file:
+/* to split large csv file retaining header:
 
 tail -n +2 mesh_gene_intersect.tsv | split -l 1000 - split_
 for file in split_*
@@ -51,7 +51,7 @@ tail -n +2 FILE.in | split -d --lines 100 - --filter='bash -c "{ head -n1 ${FILE
 
 
 
-$path = "/home/jiwpark00/timrpeterson/njacobs/process_data/";
+$path = "/home/jiwpark00/timrpeterson/njacobs/mesh_gene_intersect_split/";
 
 $files = array_diff(scandir($path), array('.', '..'));
 
