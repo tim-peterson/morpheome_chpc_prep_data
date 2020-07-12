@@ -1,4 +1,5 @@
 <?php
+// NOTE: this doesn't produce useful data because the top MeSH terms for each gene are things like Homo Sapiens and other terms that aren't useful to users.
 
 ini_set('memory_limit', '-1');
 
