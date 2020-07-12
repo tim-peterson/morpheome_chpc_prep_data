@@ -85,9 +85,16 @@ with open(dataset) as csv_file:
 
 	csv_file.close()
 
+cnt = 0
 for input0 in input_genes:
 
+	if cnt < 17204:
+		cnt +=1
+		continue
+
 	input1 = input0.split("..")
+
+	#print(input1)
 
 	with open(dataset) as csv_file:
 		csv_reader = csv.reader(csv_file, delimiter=delimiter)
