@@ -16,3 +16,4 @@
 11. CHPC (Tim) - Generate individual gene co-essentiality scores using [coessentiality_all_genes.py](https://github.com/tim-peterson/morpheome_chpc_prep_data/blob/master/py/coessentiality_all_genes.py)
 12. CHPC (Tim) - Generate short list of top depmap co-essentiality scores using [depmap_2019q4_get_top_e-5.php](https://github.com/tim-peterson/morpheome_chpc_prep_data/blob/master/php/depmap_2019q4_get_top_e-5.php). Used .00001 as p-value cut-off. 
 13. Macbook (Tim) - Intersect genes-ppi-drug with depmap using [ppi_mesh_depmap_screens_intersect.php](https://github.com/tim-peterson/morpheome/blob/master/app/Console/Commands/Morpheome/pipeline/ppi_mesh_depmap_screens_intersect.php)
+14. Macbook (Tim) - Convert csv file to json for algolia using [final_data_convert_to_json_4_algolia.php](https://github.com/tim-peterson/morpheome/blob/master/app/Console/Commands/Morpheome/pipeline/final_data_convert_to_json_4_algolia.php)
