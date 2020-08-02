@@ -50,7 +50,7 @@ foreach($files as $file){
 
     echo $file;
 
-    $grants = [];
+    $citations = [];
 
     if ( ($handle = fopen($storage_path.$file, "r") ) !== FALSE && strpos($file, ".article")!==false) {
 
@@ -73,7 +73,7 @@ foreach($files as $file){
                 continue;
             }
 
-            $grants[] = [$line[$year_key], $line[$content_key]];
+            $citations[] = [$line[$year_key], $line[$content_key]];
 
 
         }
@@ -82,7 +82,7 @@ foreach($files as $file){
     fclose($handle);
 
 
-    foreach($grants as $arr){
+    foreach($citations as $arr){
 
         $arr_str = explode(" ", $arr[1]);
 
