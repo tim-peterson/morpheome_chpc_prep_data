@@ -1,5 +1,5 @@
 <?php
-// NOTE: this doesn't produce useful data because the top MeSH terms for each gene are things like Homo Sapiens and other terms that aren't useful to users.
+
 
 ini_set('memory_limit', '-1');
 
@@ -10,97 +10,103 @@ $storage = "/home/jiwpark00/timrpeterson/MORPHEOME/";
 
 $base_path = "/home/jiwpark00/timrpeterson/MORPHEOME/FOR_PAPER/Figure1-pubmed/";
 
-if ( ($handle = fopen($base_path."gene_paper_count_lt10_per_paper.txt", "r") ) !== FALSE) {
 
-    //$genes = [];
 
-    $input_genes = [];
+$base_dir = "/home/jiwpark00/timrpeterson/njacobs/";
 
-    $cnt = 0;
+ $sql_tables = [
+    "bioplex_v1_293T_minimum_info.csv",
+    "bioplex_v2_293T_minimum_info.csv",
+    "bioplex_v3_293T_minimum_info.csv",
+    "bioplex_v3_HCT116_minimum_info.csv",
 
-    while (($line = fgetcsv($handle,  0, "\t")) !== FALSE){
+];
 
-        $input_genes[strtolower($line[0])] = ["citation_counts" => $line[1]];
+$ppi = [];
 
-    }
+foreach($sql_tables as $file){
     
-}
-fclose($handle);
+    if ( ($handle = fopen($base_dir."bioplex/".$file, "r") ) !== FALSE) {
 
+        $i = 0;
+        while (($line = fgetcsv($handle,  0, ",")) !== FALSE){
 
-
-if ( ($handle = fopen($base_path."scimagojr 2019.txt", "r") ) !== FALSE) {
-
-    //$genes = [];
-
-    $h_index = [];
-
-    $cnt0 = 0;
-
-    while (($line = fgetcsv($handle,  0, "\t")) !== FALSE){
-
-        if($cnt0 == 0){
-
-            foreach($line as $k => $v){
-                if($v == "Issn") $issn_key = $k;
-                if($v == "H index") $h_index_key = $k;
+            if($i==0){
+                $i++; continue;
             }
 
-            $cnt0++;
-            continue;
-        }
-
-        //$issn = $line[$issn_key];
-
-        //print_r($line[$issn_key]);
-        //exit;
-
-        if(isset($line[$issn_key])){
-
-            $issns = explode(", ", $line[$issn_key]);
-
-            if(isset($issns[0]) && $issns[0]!= ''){
-
-                if(isset($line[$h_index_key])){
-                    $h_index[$issns[0]] = $line[$h_index_key];
-                }    
-
-            }
-            elseif(isset($issns[1]) && $issns[1]!= ''){
-
-                if(isset($line[$h_index_key])){
-                    $h_index[$issns[1]] = $line[$h_index_key];
-                }
+            if(!isset($ppi[$line[0]])){
+                $ppi[$line[0]] = [$line[1] => $line[1]];
             }
             else{
-
-                if(isset($line[$h_index_key])){
-                    $h_index[$line[$issn_key]] = $line[$h_index_key];
-                }
-
+                $ppi[$line[0]][$line[1]] = $line[1];
             }
 
+            if(!isset($ppi[$line[1]])){
+                $ppi[$line[1]] = [$line[0] => $line[0]];
+            }
+            else{
+                $ppi[$line[1]][$line[0]] = $line[0];
+            }
+
+
+            $i++;
         }
 
-        
-
     }
-    
+    fclose($handle);
+
 }
-fclose($handle);
 
 
 
-$storage_path = "/home/jiwpark00/timrpeterson/medline/hgwdev.gi.ucsc.edu/~max/trpeterson/medline/";
+
+$storage_path = "/home/jiwpark00/timrpeterson/njacobs/interactions_correlation_basal/";
 
 
 $files = array_diff(scandir($storage_path), array('.', '..', '._'));
 
-$files = array_reverse($files);
+//$files = array_reverse($files);
+$files1 = [];
 
+foreach($files as $key => $val){
+
+    $gene_arr = explode("-", $val);
+
+    $files1[$gene_arr[0]] = $key;
+}
 //print_r(count($files));
 
 $cnt = 0;
+
+foreach($ppi as $key => $arr){
+
+    if(isset($files1[$key])){
+
+        $citations = [];
+
+        foreach($arr as $k => $v){
+
+            if ( ($handle = fopen($storage_path.$file, "r") ) !== FALSE) {
+
+                $cnt0 = 0;
+
+                while (($line = fgetcsv($handle,  0, ",")) !== FALSE){
+
+
+                    if($line[2] < 0.05){
+
+                    }
+                    
+                }
+            }
+
+        }
+
+
+    }
+}
+
 
 foreach($files as $file){
 
@@ -109,7 +115,7 @@ foreach($files as $file){
 
 */
 
-    if(strpos($file, "._")!==false || strpos($file, "DS_Store")!==false || strpos($file, "index.html")!==false || strpos($file, "articles.db")!==false  ) continue;
+    if(strpos($file, "._")!==false || strpos($file, "DS_Store")!==false  ) continue;
 
     //echo $file;
 
@@ -126,10 +132,7 @@ foreach($files as $file){
                 $journal_key = $eIssn_key = $issn_key = $content_key = '';
                 foreach($line as $k => $v){
                     if($v == "year") $year_key = $k;
-                    if($v == "abstract") $content_key = $k; // || $v == "PROJECT_TITLE"
-                    //if($v == "journal") $journal_key = $k;
-                    if($v == "printIssn") $issn_key = $k;
-                    if($v == "eIssn") $eIssn_key = $k;
+
 
                 }
 
@@ -201,10 +204,11 @@ foreach($files as $file){
     }
 
 
-    if($cnt > 51) break;
-    echo "\r\n";
+
+    //if($cnt > 51) break;
+    /*echo "\r\n";
     echo $cnt++;
-    echo "\r\n";
+    echo "\r\n";*/
 }
 
 
