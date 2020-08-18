@@ -24,6 +24,7 @@ if ( ($handle = fopen($base_path."gene_paper_count_lt10_per_paper.txt", "r") ) !
 }
 fclose($handle);
 
+// NOTE: NIHREPORTER API times out, so had to download the data and access it from csv files instead
 
 if ( ($handle1 = fopen($base_path."gene_grants_count_lt10_genes_per_paper_per_year.csv", "w") ) !== FALSE) {
 

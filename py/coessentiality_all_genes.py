@@ -8,6 +8,11 @@ import csv
 
 import numpy as np
 import pandas as pd
+from itertools import islice
+
+def take(n, iterable):
+    #"Return first n items of the iterable as a list"
+    return list(islice(iterable, n))
 
 
 input = ["ATRAID (51374)"]
@@ -59,10 +64,21 @@ dataset = base_path + 'Achilles_gene_effect-2019q4-Broad_t_noNAs.csv'
 #dataset = base_path + 'gene_effect_corrected_t_clean_gene_name.csv'
 #dataset = base_path + 'qbf_Avanadata_2018.txt'
 
+
+base_path = '/home/jiwpark00/timrpeterson/MORPHEOME/FOR_PAPER/Figure2-introduce-morpheome/'
+
+dataset = base_path + 'D2_Achilles_gene_dep_scores.csv'
+
+
 if "gene_effect" not in dataset:
-	age = '2018q4'
-	delimiter = '\t'
-	remove_gene_id = False 
+	if "Achilles" in dataset:
+		age = '2020'
+		delimiter = ','
+		remove_gene_id = True		
+	else:
+		age = '2018q4'
+		delimiter = '\t'
+		remove_gene_id = False 
 else:
 	if "2019q4" in dataset:
 		age = '2019q4'
@@ -85,14 +101,23 @@ with open(dataset) as csv_file:
 
 	csv_file.close()
 
+
+
+#input_genes = ["MTOR (2475)", 'ATRAID (51374)', "SLC37A3 (84255)"]
+
+#input_genes = ["SPTLC2 (9517)", "COL4A3BP (10087)"]
+
+
+
 cnt = 0
 for input0 in input_genes:
 
-	if cnt < 17204:
+	if cnt < 60:
 		cnt +=1
 		continue
 
-	input1 = input0.split("..")
+	#input1 = input0.split("..")
+	input1 = input0.split(" ")
 
 	#print(input1)
 
@@ -100,7 +125,7 @@ for input0 in input_genes:
 		csv_reader = csv.reader(csv_file, delimiter=delimiter)
 		next(csv_reader)
 
-		with open(base_path + 'interactions_correlation_basal/' + input1[0] + '-pearsons-python-' + age + '.csv', 'w') as csvfile:
+		with open('/home/jiwpark00/timrpeterson/njacobs/' + 'interactions_correlation_basal-Achilles/' + input1[0] + '-pearsons-python-' + age + '.csv', 'w') as csvfile:
 
 		#with open('/Users/timrpeterson/OneDrive - Washington University in St. Louis/Data/MORPHEOME/DepMap/cherry-picked/' + input0 + '-pearsons-python-' + age + '.csv', 'wb') as csvfile:
 			spamwriter = csv.writer(csvfile, delimiter=',')
@@ -111,7 +136,8 @@ for input0 in input_genes:
 				row.pop(0)
 
 				if remove_gene_id is True:
-					arr = gene.split("..")
+					#arr = gene.split("..")
+					arr = gene.split(" ")
 				#row_temp.pop(0)
 					genes[arr[0]] = row
 				else:
@@ -138,6 +164,9 @@ for input0 in input_genes:
 
 				#print(filtered_gene)
 				#print(filtered_value)
+				if len(filtered_value) < 3 or len(filtered_gene) < 3:
+					continue
+
 				result = pearsonr([float(elt) for elt in filtered_value], [float(elt) for elt in filtered_gene])
 
 				#result = pearsonr(np.array(filtered_value).astype(np.float), np.array(filtered_gene).astype(np.float))

@@ -237,25 +237,26 @@ foreach($files as $file){
 
     foreach($grants as $arr){
 
-        //$arr_str = explode(" ", $arr[1]);
-
-        //print_r($arr[0]);
-        //exit;
-
-        if(strpos(strtolower($arr[0]), "gene")==false){
-            continue;
-        } 
-
+        if(strpos(strtolower($arr[0]), "gene")==false) continue; 
 
         $arr_str = explode(" ", $arr[0]);
 
         $arr_str = array_filter($arr_str);
 
+        $tmp = [];
+
         foreach($arr_str as $val){
 
             $val = trim($val);
 
-            if(isset($input_genes[strtolower($val)])){ 
+            $val_ = strtolower($val);
+
+            // exclude genes with short names that could be common words
+            if(strlen($val_) < 3 || $val_ == 'mice') continue;
+
+            if(isset($input_genes[$val_])){ 
+
+                if(in_array($val_, $tmp)) continue;
 
                 foreach($arr_str as $v){
 
@@ -263,14 +264,14 @@ foreach($files as $file){
 
                     if(is_numeric($v) && 1984 < $v && $v < 2021){
 
-                        if(!isset($input_genes[strtolower($val)][$v])){
+                        if(!isset($input_genes[$val_][$v])){
 
                             //echo $arr[1];
 
-                            $input_genes[strtolower($val)][$v] = [$arr[1]];
+                            $input_genes[$val_][$v] = [$arr[1]];
                         }
                         else{
-                            $input_genes[strtolower($val)][$v][] = $arr[1];
+                            $input_genes[$val_][$v][] = $arr[1];
 
                         } 
                         
@@ -279,7 +280,8 @@ foreach($files as $file){
 
                 }
 
-                break;
+                $tmp[] = $val_;
+                //break;
 
             }
         }
@@ -297,7 +299,7 @@ foreach($files as $file){
      
 
 
-if ( ($handle1 = fopen($base_path."get_all_grants_per_gene_per_year_from_csv_files_require_the_term_gene_with_univs.csv", "w") ) !== FALSE) {
+if ( ($handle1 = fopen($base_path."get_all_grants_per_gene_per_year_from_csv_files_abstract_curated__allow_multiple_genes_per_grant_with_univs_all_values.csv", "w") ) !== FALSE) {
 
         
         foreach($input_genes as $gene => $arr){
@@ -320,7 +322,8 @@ if ( ($handle1 = fopen($base_path."get_all_grants_per_gene_per_year_from_csv_fil
 
                 if(count($val)==0) continue;
 
-                fputcsv($handle1, [$gene, $year, count($val), array_sum($val)/count($val) ]);
+                //fputcsv($handle1, [$gene, $year, count($val), array_sum($val)/count($val) ]);
+                fputcsv($handle1, array_merge([$gene, $year], $val) );
                
 
             }

@@ -41,7 +41,7 @@ $cnt = 0;
 foreach($files as $file){
 
 
-    if(strpos($file, "._")!==false || strpos($file, "DS_Store")!==false  ) continue;
+    if(strpos($file, "._")!==false || strpos($file, "DS_Store")!==false || strpos($file, "zip")!==false ) continue;
 
     echo $file;
 
@@ -118,22 +118,32 @@ foreach($files as $file){
 
         $arr_str = explode(" ", $arr);
 
+        $tmp = [];
+
         foreach($arr_str as $val){
 
             $val = trim($val);
 
-            if(isset($input_genes[strtolower($val)])){ 
+            $val_ = strtolower($val);
+
+            // exclude genes with short names that could be common words
+            if(strlen($val_) < 3 || $val_ == 'mice') continue;
+
+            if(isset($input_genes[$val_])){ 
+
+                // prevent a gene from being counted twice within the same grant
+                if(in_array($val_, $tmp)) continue;
 
                 foreach($arr_str as $v){
 
                     $v = trim($v);
 
                     if(is_numeric($v) && 1984 < $v && $v < 2021){
-                        if(!isset($input_genes[strtolower($val)][$v])){
-                            $input_genes[strtolower($val)][$v] = 1;
+                        if(!isset($input_genes[$val_][$v])){
+                            $input_genes[$val_][$v] = 1;
                         
                         }
-                        else $input_genes[strtolower($val)][$v]++;  
+                        else $input_genes[$val_][$v]++;  
                         
                         break;                      
                     }
@@ -141,7 +151,9 @@ foreach($files as $file){
 
                 }
 
-                break;
+                $tmp[] = $val_;
+
+                //break;
                 //echo "\r\n";
                 //echo 'hit: '.$input_genes[strtolower($val)];
                 //echo "\r\n";
@@ -166,8 +178,23 @@ foreach($files as $file){
     echo "\r\n";
 }
 
+/*foreach($input_genes as $gene => &$arr){
 
-if ( ($handle1 = fopen($base_path."get_all_grants_per_gene_per_year_from_csv_files_require_the_term_gene.csv", "w") ) !== FALSE) {
+    $citation_counts = $arr["citation_counts"];
+
+    $sum = 0;
+    foreach($arr as $key => $val){
+         $sum = $sum + $val;
+    }
+    //if(!isset($arr[1])) $arr[1] = 0;
+
+    // get rid of grant counts for genes that are 10X more abundant in grant than in citations
+    if($citation_counts*10 < $sum) $arr[1] = $arr[0];
+   
+}*/
+
+
+if ( ($handle1 = fopen($base_path."get_all_grants_per_gene_per_year_from_csv_files_abstract_curated_allow_multiple_genes_per_grant.csv", "w") ) !== FALSE) {
 
         
         foreach($input_genes as $gene => $arr){

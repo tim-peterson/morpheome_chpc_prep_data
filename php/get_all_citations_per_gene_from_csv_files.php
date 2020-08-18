@@ -40,7 +40,6 @@ $cnt = 0;
 
 foreach($files as $file){
 
-
 /*#articleId      externalId      source  publisher       origFile        journal printIssn       eIssn   journalUniqueId year    articleType     articleSection  authors authorEmails    authorAffiliations      keywords        title   abstract        vol     issue   page    pmid    pmcId   pii     doi     fulltextUrl     time    offset  size
 3358200110      PMID32359029    medline ncbi
 
@@ -75,7 +74,6 @@ foreach($files as $file){
 
             $citations[] = [$line[$year_key], $line[$content_key]];
 
-
         }
         
     }
@@ -86,21 +84,29 @@ foreach($files as $file){
 
         $arr_str = explode(" ", $arr[1]);
 
+        $arr_str = array_filter($arr_str);
+
+        $tmp = [];
+
         foreach($arr_str as $val){
 
-            if(isset($input_genes[strtolower($val)])){
+            $val_ = strtolower($val);
 
-                //echo "\r\n";
-                //echo 'hit: '.$input_genes[strtolower($val)];
-                //echo "\r\n";
+            //if(strlen($val_) < 3 || $val_ == 'mice') continue;
 
-                if(!isset($input_genes[strtolower($val)][1])){
-                    $input_genes[strtolower($val)][1] = 1;
+            if(isset($input_genes[$val_])){
+
+                if(in_array($val_, $tmp)) continue;
+
+                if(!isset($input_genes[$val_][1])){
+                    $input_genes[$val_][1] = 1;
                 }
-                else $input_genes[strtolower($val)][1]++;
+                else $input_genes[$val_][1]++;
+
+                $tmp[] = $val_;
+
             }
-        }
-        
+        }    
     }
 
 
@@ -111,18 +117,18 @@ foreach($files as $file){
 }
 
 
-if ( ($handle1 = fopen($base_path."get_all_citations_per_gene_from_csv_files.csv", "w") ) !== FALSE) {
+if ( ($handle1 = fopen($base_path."get_all_citations_per_gene_from_csv_files_abstract_curated_allow_multiple_genes_per_citation.csv", "w") ) !== FALSE) {
 
         
-        foreach($input_genes as $gene => $arr){
+    foreach($input_genes as $gene => $arr){
 
-            if(!isset($arr[1])) $arr[1] = 0;
+        if(!isset($arr[1])) $arr[1] = 0;
 
-            $tmp = array_merge([$gene], $arr);
+        $tmp = array_merge([$gene], $arr);
 
-            fputcsv($handle1, $tmp);
-           
-        }
+        fputcsv($handle1, $tmp);
+       
+    }
 
 }
 fclose($handle1);

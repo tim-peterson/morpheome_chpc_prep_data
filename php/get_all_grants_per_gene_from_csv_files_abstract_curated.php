@@ -85,17 +85,25 @@ foreach($files as $file){
 
         $arr_str = explode(" ", $arr);
 
-
-
-
+        $tmp = [];
         foreach($arr_str as $val){
-            if(isset($input_genes[strtolower($val)])){
+
+            $val_ = strtolower($val);
 
 
-                if(!isset($input_genes[strtolower($val)])){
-                    $input_genes[strtolower($val)][1] = 1;
+            // exclude genes with short names that could be common words
+            if(strlen($val_) < 3 || $val_ == 'mice') continue;
+            
+            if(isset($input_genes[$val_])){
+
+                if(in_array($val_, $tmp)) continue;
+
+                if(!isset($input_genes[$val_])){
+                    $input_genes[$val_][1] = 1;
                 }
-                else $input_genes[strtolower($val)][1]++;
+                else $input_genes[$val_][1]++;
+
+                $tmp[] = $val_;
             }
         }
         
@@ -113,6 +121,7 @@ foreach($input_genes as $gene => &$arr){
 
     if(!isset($arr[1])) $arr[1] = 0;
 
+    // get rid of grant counts for genes that are 10X more abundant in grant than in citations
     if($arr[0]*10 < $arr[1]) $arr[1] = $arr[0];
    
 }
@@ -121,7 +130,7 @@ uasort($input_genes, function($a, $b) {
     return $b['1'] <=>  $a['1'];
 });
 
-if ( ($handle1 = fopen($base_path."get_all_grants_per_gene_from_csv_files_abstract_curated.csv", "w") ) !== FALSE) {
+if ( ($handle1 = fopen($base_path."get_all_grants_per_gene_from_csv_files_abstract_curated_allow_multiple_genes_per_grant.csv", "w") ) !== FALSE) {
 
     foreach($input_genes as $gene => $arr){
 
